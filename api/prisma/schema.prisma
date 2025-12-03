@@ -1,0 +1,86 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Booking {
+  id             String        @id @default(cuid())
+  parentName     String
+  parentPhone    String
+  parentEmail    String?
+  childName      String
+  childAgeYears  Int?
+  childAgeMonths Int?
+  /// Visit type stored as string; allowed values enforced in application layer:
+  /// 'CLINIC' | 'ONLINE'
+  visitType      String
+  preferredDate  DateTime
+  preferredSlot  String
+  reason         String?
+  /// Booking status stored as string; allowed values enforced in application layer:
+  /// 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'VISITED' | 'NO_SHOW'
+  status         String        @default("PENDING")
+  adminNotes     String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model AdminUser {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+}
+
+model TimeSlot {
+  id        String   @id @default(cuid())
+  slot      String   @unique // e.g., "11:00 AM", "11:30 AM"
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  dateAvailabilities DateAvailability[] // Slots can be used in date-specific availability
+}
+
+model DateAvailability {
+  id        String   @id @default(cuid())
+  date      DateTime // Date stored as DateTime (time will be normalized to 00:00:00 in app layer)
+  slotId    String
+  slot      TimeSlot @relation(fields: [slotId], references: [id], onDelete: Cascade)
+  isAvailable Boolean @default(true) // Can be set to false to block a specific slot on a date
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([date, slotId]) // One slot per date combination
+  @@index([date]) // Index for faster date queries
+}
+
+model DayAvailability {
+  id        String   @id @default(cuid())
+  date      DateTime @unique // Date stored as DateTime (time normalized to 00:00:00)
+  /// Day availability type: 'UNAVAILABLE' | 'ONLINE_ONLY' | 'AVAILABLE'
+  /// UNAVAILABLE: All slots blocked for this day
+  /// ONLINE_ONLY: Only online appointments allowed (no clinic visits)
+  /// AVAILABLE: Normal availability (can be overridden by slot-specific settings)
+  availabilityType String @default("AVAILABLE")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([date]) // Index for faster date queries
+}
+
+model Holiday {
+  id          String   @id @default(cuid())
+  date        DateTime // Date stored as DateTime (time normalized to 00:00:00)
+  name        String
+  isRecurring Boolean  @default(false) // If true, applies to this date every year
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([date]) // Index for faster date queries
+}
+
+

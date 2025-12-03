@@ -1,0 +1,21 @@
+{
+  "name": "tender-touch-root",
+  "private": true,
+  "workspaces": [
+    "api",
+    "web"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm --workspace api run dev\" \"npm --workspace web run dev\"",
+    "format": "prettier --write .",
+    "lint:web": "cd web && eslint .",
+    "lint:api": "cd api && eslint .",
+    "lint": "npm run lint:web && npm run lint:api"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1",
+    "prettier": "^3.2.5"
+  }
+}
+
+

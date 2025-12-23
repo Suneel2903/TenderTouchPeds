@@ -1,0 +1,9 @@
+Tue, Dec 23, 2025  6:39:09 PM
+
+--- AWS HOSTING DISCOVERY OUTPUT ---
+
+REPO:
+/c/Users/marri/TenderTouchPeds
+
+COMMAND OUTPUT BELOW
+

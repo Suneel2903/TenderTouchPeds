@@ -126,28 +126,28 @@ export default function BookingsManager({
     let bVal: string | number;
 
     switch (sortField) {
-      case 'preferredDate':
-        aVal = new Date(a.preferredDate).getTime();
-        bVal = new Date(b.preferredDate).getTime();
-        break;
-      case 'preferredSlot':
-        aVal = a.preferredSlot;
-        bVal = b.preferredSlot;
-        break;
-      case 'status':
-        aVal = a.status;
-        bVal = b.status;
-        break;
-      case 'childName':
-        aVal = a.childName.toLowerCase();
-        bVal = b.childName.toLowerCase();
-        break;
-      case 'createdAt':
-        aVal = new Date(a.createdAt).getTime();
-        bVal = new Date(b.createdAt).getTime();
-        break;
-      default:
-        return 0;
+    case 'preferredDate':
+      aVal = new Date(a.preferredDate).getTime();
+      bVal = new Date(b.preferredDate).getTime();
+      break;
+    case 'preferredSlot':
+      aVal = a.preferredSlot;
+      bVal = b.preferredSlot;
+      break;
+    case 'status':
+      aVal = a.status;
+      bVal = b.status;
+      break;
+    case 'childName':
+      aVal = a.childName.toLowerCase();
+      bVal = b.childName.toLowerCase();
+      break;
+    case 'createdAt':
+      aVal = new Date(a.createdAt).getTime();
+      bVal = new Date(b.createdAt).getTime();
+      break;
+    default:
+      return 0;
     }
 
     if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;

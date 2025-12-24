@@ -449,10 +449,6 @@ export default function AppointmentForm() {
         )}
       </div>
 
-      <p className="tt-small text-slate-500">
-        This form is for appointment requests only. It is not monitored for emergencies. In case of
-        emergency, please visit the nearest hospital.
-      </p>
 
       {submitState === 'success' && (
         <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4">

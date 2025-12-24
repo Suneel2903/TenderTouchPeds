@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import express from 'express';
-import cors, { type CorsOptions } from 'cors';
+import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import bookingsRouter from './routes/bookings';
@@ -35,15 +35,20 @@ app.use(
   }),
 );
 
-const allowedOrigins = ['http://localhost:4000'];
+const rawOrigins = process.env.CORS_ORIGINS || 'http://localhost:4000';
+const allowedOrigins = rawOrigins.split(',').map((s) => s.trim()).filter(Boolean);
 
-const corsOptions: CorsOptions = {
-  origin: allowedOrigins,
-  methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
-  credentials: false,
-};
-
-app.use(cors(corsOptions));
+app.use(
+  cors({
+    origin: (origin, cb) => {
+      if (!origin) return cb(null, true);
+      if (allowedOrigins.includes(origin)) return cb(null, true);
+      return cb(new Error(`CORS blocked for origin: ${origin}`));
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+  }),
+);
 
 if (process.env.NODE_ENV !== 'production') {
   app.use(morgan('tiny'));

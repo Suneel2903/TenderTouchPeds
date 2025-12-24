@@ -65,6 +65,8 @@ export default function BookingsManager({
   const [saving, setSaving] = useState(false);
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [reschedulingBooking, setReschedulingBooking] = useState<Booking | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   const fetchBookings = useCallback(async () => {
     const token = localStorage.getItem('adminToken');
@@ -107,6 +109,7 @@ export default function BookingsManager({
 
   useEffect(() => {
     fetchBookings();
+    setCurrentPage(1); // Reset to first page when filters change
   }, [fetchBookings]);
 
   const handleSort = (field: SortField) => {
@@ -226,6 +229,56 @@ export default function BookingsManager({
     return sortDirection === 'asc' ? <span>↑</span> : <span>↓</span>;
   };
 
+  // Pagination calculations
+  const totalPages = Math.ceil(sortedBookings.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedBookings = sortedBookings.slice(startIndex, endIndex);
+
+  // Excel export function
+  const exportToExcel = () => {
+    // Create workbook
+    const data = sortedBookings.map((booking) => ({
+      'Date': formatDate(booking.preferredDate),
+      'Time': booking.preferredSlot,
+      'Child Name': booking.childName,
+      'Child Age': `${booking.childAgeYears ?? ''}y ${booking.childAgeMonths ?? ''}m`.trim() || 'N/A',
+      'Parent Name': booking.parentName,
+      'Parent Phone': booking.parentPhone,
+      'Parent Email': booking.parentEmail || 'N/A',
+      'Visit Type': booking.visitType === 'CLINIC' ? 'In-Clinic' : 'Online',
+      'Status': getStatusLabel(booking.status),
+      'Reason': booking.reason || 'N/A',
+      'Admin Notes': booking.adminNotes || 'N/A',
+      'Created At': formatDateTime(booking.createdAt),
+    }));
+
+    // Convert to CSV (simpler than Excel, works without external library)
+    const headers = Object.keys(data[0] || {});
+    const csvContent = [
+      headers.join(','),
+      ...data.map(row => headers.map(header => {
+        const value = row[header as keyof typeof row];
+        // Escape commas and quotes in CSV
+        if (typeof value === 'string' && (value.includes(',') || value.includes('"') || value.includes('\n'))) {
+          return `"${value.replace(/"/g, '""')}"`;
+        }
+        return value;
+      }).join(','))
+    ].join('\n');
+
+    // Create blob and download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `bookings_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -235,8 +288,15 @@ export default function BookingsManager({
         </p>
       </div>
 
-      {/* Action Button */}
-      <div className="flex justify-end">
+      {/* Action Buttons */}
+      <div className="flex justify-between items-center">
+        <button
+          onClick={exportToExcel}
+          disabled={sortedBookings.length === 0}
+          className="rounded-full bg-brand-teal px-4 py-2 text-sm font-semibold text-white hover:bg-brand-tealDark disabled:opacity-60 disabled:cursor-not-allowed"
+        >
+          📥 Export to Excel
+        </button>
         <button
           onClick={() => {
             setReschedulingBooking(null);
@@ -348,7 +408,7 @@ export default function BookingsManager({
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200">
-                {sortedBookings.map((booking) => (
+                {paginatedBookings.map((booking) => (
                   <tr key={booking.id} className="hover:bg-slate-50">
                     <td className="px-4 py-3 text-sm text-slate-900">
                       {formatDate(booking.preferredDate)}
@@ -422,6 +482,59 @@ export default function BookingsManager({
               </tbody>
             </table>
           </div>
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="bg-slate-50 px-4 py-3 border-t border-slate-200 flex items-center justify-between">
+              <div className="text-sm text-slate-700">
+                Showing {startIndex + 1} to {Math.min(endIndex, sortedBookings.length)} of {sortedBookings.length} bookings
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  disabled={currentPage === 1}
+                  className="px-3 py-1 rounded-lg border border-slate-300 text-sm font-medium text-slate-700 hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Previous
+                </button>
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+                    if (
+                      page === 1 ||
+                      page === totalPages ||
+                      (page >= currentPage - 2 && page <= currentPage + 2)
+                    ) {
+                      return (
+                        <button
+                          key={page}
+                          onClick={() => setCurrentPage(page)}
+                          className={`px-3 py-1 rounded-lg text-sm font-medium ${
+                            currentPage === page
+                              ? 'bg-brand-teal text-white'
+                              : 'border border-slate-300 text-slate-700 hover:bg-white'
+                          }`}
+                        >
+                          {page}
+                        </button>
+                      );
+                    } else if (
+                      page === currentPage - 3 ||
+                      page === currentPage + 3
+                    ) {
+                      return <span key={page} className="px-2 text-slate-500">...</span>;
+                    }
+                    return null;
+                  })}
+                </div>
+                <button
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  disabled={currentPage === totalPages}
+                  className="px-3 py-1 rounded-lg border border-slate-300 text-sm font-medium text-slate-700 hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
 

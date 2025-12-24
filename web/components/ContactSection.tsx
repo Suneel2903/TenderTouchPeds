@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export default function ContactSection() {
   const phone = process.env.NEXT_PUBLIC_CLINIC_PHONE ?? '+918121666387';
-  const email = 'admin@tendertouchpediatrics.in';
+  const email = 'info.tendertouchpeds@gmail.com';
   const clinicAddress =
     process.env.NEXT_PUBLIC_CLINIC_ADDRESS ??
     'Shop No. 111, Ground Floor, Kokapet Terminal Building, Radha Spaces, Gandipet Main Road, Kokapet, Hyderabad';
@@ -15,8 +15,6 @@ export default function ContactSection() {
           <h2 className="tt-h2 mb-3 text-brand-tealDark">Contact & Location</h2>
           <p className="tt-body mb-3">
             <strong>Tender Touch Pediatric Clinic</strong>
-            <br />
-            Pediatrician: <strong>Dr. S M Deepthi</strong>
           </p>
           <p className="tt-body mb-2">
             <strong>Address:</strong>
@@ -37,12 +35,6 @@ export default function ContactSection() {
           </p>
           <p className="tt-body mb-2">
             <strong>Clinic hours:</strong> Mon–Sat, 11:00 AM – 2:00 PM & 5:00 PM – 8:00 PM
-            <br />
-            <strong>Online consults:</strong> 8:00 AM – 8:00 PM (by prior booking)
-          </p>
-          <p className="tt-small text-slate-600">
-            Not for emergencies – in case of emergency, please visit the nearest hospital
-            immediately.
           </p>
         </div>
         <div className="space-y-3 motion-safe:animate-fade-in-right">

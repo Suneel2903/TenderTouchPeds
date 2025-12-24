@@ -3,7 +3,9 @@ import Image from 'next/image';
 
 export default function HeroSection() {
   const phone = process.env.NEXT_PUBLIC_CLINIC_PHONE ?? '';
-  const reviewsUrl = process.env.NEXT_PUBLIC_GOOGLE_MAPS_URL ?? '#reviews';
+  const reviewsUrl =
+    process.env.NEXT_PUBLIC_GOOGLE_REVIEWS_URL ||
+    'https://www.google.com/search?hl=en-IN&gl=in&q=Shop+111,+Dr.+Deepthi%E2%80%99s+Tender+Touch+Pediatrics,+Kokapet+Terminal,+Gandipet+Main+Rd,+Kokapet,+Hyderabad,+Telangana+500075&ludocid=16677382625750694445&lsig=AB86z5Vasb3u0fH9bBMSSN3K5C9C&hl=en&gl=IN#lrd=0x3bcb95a56a3c56bb:0xe771f72337243a2d,1,,,,';
 
   return (
     <section className="bg-animated-teal text-white">

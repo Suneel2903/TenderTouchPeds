@@ -7,15 +7,14 @@ export default function ContactSection() {
     process.env.NEXT_PUBLIC_CLINIC_ADDRESS ??
     'Shop No. 111, Ground Floor, Kokapet Terminal Building, Radha Spaces, Gandipet Main Road, Kokapet, Hyderabad';
   // Embed URL for iframe (must be an embed URL from Google Maps "Share" > "Embed a map")
-  // If not set, use a basic embed URL with the address
   const mapsEmbedUrl =
-    process.env.NEXT_PUBLIC_GOOGLE_MAPS_URL ||
-    `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3806.0!2d78.3456!3d17.4123!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTfCsDI0JzQ0LjQiTiA3OMKwMjAnNDQuNCJF!5e0!3m2!1sen!2sin!4v1234567890123!5m2!1sen!2sin&q=${encodeURIComponent(clinicAddress)}`;
+    process.env.NEXT_PUBLIC_GOOGLE_MAPS_EMBED_URL ||
+    'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3807.548492475724!2d78.32731307493462!3d17.385445983501402!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb95a56a3c56bb%3A0xe771f72337243a2d!2sDr.%20Deepthi%E2%80%99s%20Tender%20Touch%20Pediatrics!5e0!3m2!1sen!2sin!4v1766553871049!5m2!1sen!2sin';
   
   // Share URL for "Open in Google Maps" link (regular Google Maps URL)
   const mapsShareUrl =
     process.env.NEXT_PUBLIC_GOOGLE_MAPS_SHARE_URL ||
-    `https://maps.google.com/?q=${encodeURIComponent(clinicAddress)}`;
+    'https://maps.google.com/?q=Shop+No.+111,+Ground+Floor,+Kokapet+Terminal+Building,+Radha+Spaces,+Gandipet+Main+Road,+Kokapet,+Hyderabad';
 
   return (
     <section id="contact" className="py-10 md:py-14 bg-white">

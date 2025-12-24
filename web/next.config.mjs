@@ -1,11 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  basePath: '/TenderTouchPeds', // required for GitHub Pages project site
-  output: 'export', // static export for GitHub Pages
-  images: {
-    unoptimized: true, // required for static export
-  },
+  // Do NOT use static export - we need dynamic rendering for admin panel
+  // output: 'export' is NOT set, so Next.js will run in standard mode
 };
 
 export default nextConfig;

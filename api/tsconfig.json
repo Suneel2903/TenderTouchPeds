@@ -10,7 +10,8 @@
     "skipLibCheck": true,
     "lib": ["ES2020", "DOM"]
   },
-  "include": ["src", "tests"],
+  "include": ["src"],
+  "exclude": ["tests", "node_modules", "dist"]
   "ts-node": {
     "esm": false
   }

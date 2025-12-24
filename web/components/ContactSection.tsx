@@ -6,7 +6,16 @@ export default function ContactSection() {
   const clinicAddress =
     process.env.NEXT_PUBLIC_CLINIC_ADDRESS ??
     'Shop No. 111, Ground Floor, Kokapet Terminal Building, Radha Spaces, Gandipet Main Road, Kokapet, Hyderabad';
-  const mapsUrl = process.env.NEXT_PUBLIC_GOOGLE_MAPS_URL ?? '#';
+  // Embed URL for iframe (must be an embed URL from Google Maps "Share" > "Embed a map")
+  // If not set, use a basic embed URL with the address
+  const mapsEmbedUrl =
+    process.env.NEXT_PUBLIC_GOOGLE_MAPS_URL ||
+    `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3806.0!2d78.3456!3d17.4123!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTfCsDI0JzQ0LjQiTiA3OMKwMjAnNDQuNCJF!5e0!3m2!1sen!2sin!4v1234567890123!5m2!1sen!2sin&q=${encodeURIComponent(clinicAddress)}`;
+  
+  // Share URL for "Open in Google Maps" link (regular Google Maps URL)
+  const mapsShareUrl =
+    process.env.NEXT_PUBLIC_GOOGLE_MAPS_SHARE_URL ||
+    `https://maps.google.com/?q=${encodeURIComponent(clinicAddress)}`;
 
   return (
     <section id="contact" className="py-10 md:py-14 bg-white">
@@ -38,20 +47,22 @@ export default function ContactSection() {
           </p>
         </div>
         <div className="space-y-3 motion-safe:animate-fade-in-right">
-          <Link
-            href={mapsUrl}
+          <a
+            href={mapsShareUrl}
             target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center rounded-full bg-brand-tealDark px-5 py-2.5 text-sm font-semibold text-white shadow hover:bg-brand-teal"
           >
             Open in Google Maps
-          </Link>
+          </a>
           <div className="aspect-video w-full rounded-2xl border border-slate-200 overflow-hidden">
             <iframe
               title="Tender Touch Pediatric Clinic location"
-              src={mapsUrl}
+              src={mapsEmbedUrl}
               className="h-full w-full border-0"
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
+              allowFullScreen
             />
           </div>
         </div>

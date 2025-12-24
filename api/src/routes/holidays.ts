@@ -63,10 +63,11 @@ router.get('/api/admin/holidays', requireAdminAuth, async (req: Request, res: Re
     }));
 
     // Combine and deduplicate
+    // Both formattedHolidays and recurringForYear have date as string
     const allHolidays = [...formattedHolidays, ...recurringForYear].filter((h, idx, arr) => {
-      const dateStr = typeof h.date === 'string' ? h.date : h.date.toISOString().split('T')[0];
+      const dateStr = h.date as string;
       return arr.findIndex((h2) => {
-        const h2DateStr = typeof h2.date === 'string' ? h2.date : h2.date.toISOString().split('T')[0];
+        const h2DateStr = h2.date as string;
         return h2DateStr === dateStr;
       }) === idx;
     });

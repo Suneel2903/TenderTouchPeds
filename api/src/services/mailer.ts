@@ -26,7 +26,7 @@ if (smtpUser && smtpPass) {
       // eslint-disable-next-line no-console
       console.log('Email transport verified successfully');
     }
-  }).catch((e) => {
+  }).catch((e: unknown) => {
     // eslint-disable-next-line no-console
     console.error('Email transport verification failed:', e);
   });
